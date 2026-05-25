@@ -109,14 +109,15 @@ La navegacion y el estado se gestionan desde `app.js`. Si Alpine no se carga des
 
 Capacidad disponible aproximadamente en cada nivel:
 
-- `4.424` tarjetas del nivel.
-- `2.020` practicas de vocabulario contextual.
-- `9.622` preguntas de test.
-- `2.402` frases para practica oral.
-- `601` lecturas.
-- `1.601` temas de escritura.
+- `50` palabras base generadas del BIPA, mas ejemplos base curados en `app.js`.
+- `54-55` tarjetas SRS visibles de vocabulario del nivel.
+- `6.000` practicas de vocabulario contextual.
+- `15.412` preguntas de test.
+- `3.842` frases para practica oral y shadowing.
+- `960` lecturas generadas.
+- `4.801` temas de escritura.
 
-La biblioteca generada completa aporta `30.940` tarjetas, `67.340` preguntas, `16.800` frases, `4.200` lecturas y `11.200` temas antes de sumar los ejemplos base incluidos en `app.js`.
+La biblioteca generada completa aporta `350` palabras base, `69.230` tarjetas internas, `107.870` preguntas, `26.880` frases, `6.720` lecturas y `33.600` temas antes de sumar los ejemplos base incluidos en `app.js`.
 
 El contenido se consume en tarjetas SRS, tests, shadowing, diario, nuevas lecturas y tutor.
 

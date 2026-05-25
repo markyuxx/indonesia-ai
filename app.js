@@ -588,7 +588,7 @@ function indonesianApp() {
       return this.sortByBipaContent(this.customCards.filter((card) => this.isSelectedLevel(card)));
     },
     get tutorWordPool() {
-      return this.libraryWords.filter((card) => this.isSelectedLevel(card));
+      return this.levelVocabularyCards;
     },
     get tutorCoreWords() {
       return this.tutorWordPool;

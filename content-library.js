@@ -124,6 +124,169 @@
     }
   };
 
+  const supplementalVocabulary = {
+    1: [
+      ["saya", "yo", "Saya belajar bahasa Indonesia."], ["anda", "usted", "Anda tinggal di mana?"],
+      ["ini", "esto", "Ini buku saya."], ["itu", "eso", "Itu rumah teman saya."],
+      ["apa", "que", "Apa nama makanan ini?"], ["siapa", "quien", "Siapa nama guru itu?"],
+      ["di mana", "donde", "Di mana kamar mandi?"], ["kapan", "cuando", "Kapan pasar buka?"],
+      ["baik", "bien / bueno", "Saya baik-baik saja."], ["baru", "nuevo", "Saya punya tas baru."],
+      ["lama", "viejo / mucho tiempo", "Saya menunggu lama."], ["depan", "delante", "Toko ada di depan pasar."],
+      ["belakang", "detras", "Kamar saya di belakang."], ["atas", "arriba", "Buku ada di atas meja."],
+      ["bawah", "abajo", "Tas ada di bawah kursi."], ["teman", "amigo", "Teman saya datang pagi ini."],
+      ["guru", "profesor", "Guru berbicara pelan."], ["buku", "libro", "Saya membaca buku kecil."],
+      ["meja", "mesa", "Air ada di meja."], ["kursi", "silla", "Kursi ini besar."],
+      ["pintu", "puerta", "Tolong buka pintu."], ["uang", "dinero", "Saya membawa uang kecil."],
+      ["buah", "fruta", "Saya membeli buah di pasar."], ["teh", "te", "Saya minum teh panas."],
+      ["kopi", "cafe", "Dia pesan kopi."], ["panas", "caliente", "Air ini panas."],
+      ["dingin", "frio", "Minuman itu dingin."], ["cepat", "rapido", "Bus datang cepat."],
+      ["pelan", "lento / despacio", "Tolong bicara pelan."], ["maaf", "perdon", "Maaf, saya terlambat."]
+    ],
+    2: [
+      ["sarapan", "desayunar", "Saya sarapan sebelum bekerja."], ["makan siang", "almorzar", "Kami makan siang di kantor."],
+      ["makan malam", "cenar", "Keluarga makan malam bersama."], ["membersihkan", "limpiar", "Dia membersihkan kamar."],
+      ["menyapu", "barrer", "Saya menyapu lantai."], ["menjemur", "tender al sol", "Ibu menjemur pakaian."],
+      ["berbelanja", "hacer compras", "Kami berbelanja pada akhir pekan."], ["membayar", "pagar", "Saya membayar tagihan."],
+      ["tagihan", "factura", "Tagihan listrik sudah dibayar."], ["listrik", "electricidad", "Listrik di rumah stabil."],
+      ["air minum", "agua potable", "Air minum tersedia di dapur."], ["dokter", "medico", "Saya mengunjungi dokter."],
+      ["obat", "medicina", "Obat itu diminum setelah makan."], ["demam", "fiebre", "Anak itu demam ringan."],
+      ["batuk", "tos", "Saya batuk sejak kemarin."], ["pusing", "mareado", "Dia merasa pusing."],
+      ["istirahat", "descansar", "Saya perlu istirahat."], ["olahraga", "deporte", "Olahraga ringan baik untuk kesehatan."],
+      ["sepeda", "bicicleta", "Ia naik sepeda ke sekolah."], ["motor", "moto", "Motor berhenti di halte."],
+      ["kereta", "tren", "Kereta tiba pukul tujuh."], ["tiket", "billete", "Saya membeli tiket bus."],
+      ["peta", "mapa", "Kami melihat peta kota."], ["alamat", "direccion", "Alamat kantor mudah dicari."],
+      ["lantai", "piso / suelo", "Kamar saya di lantai dua."], ["tetap", "seguir / permanecer", "Saya tetap belajar setiap hari."],
+      ["sebelum", "antes", "Saya mandi sebelum sarapan."], ["sesudah", "despues", "Dia istirahat sesudah bekerja."],
+      ["ketika", "cuando", "Saya membaca ketika hujan."], ["kalau", "si", "Kalau sehat, saya pergi."]
+    ],
+    3: [
+      ["pernah", "alguna vez", "Saya pernah tinggal di Bali."], ["belum", "todavia no", "Saya belum membeli tiket."],
+      ["sudah", "ya", "Kami sudah tiba."], ["akan", "ir a / futuro", "Saya akan berangkat besok."],
+      ["sedang", "estar haciendo", "Dia sedang membaca pesan."], ["mulai", "empezar", "Kelas mulai pukul sembilan."],
+      ["selesai", "terminar", "Tugas selesai malam ini."], ["mungkin", "quizas", "Mungkin kami pergi besok."],
+      ["sebaiknya", "seria mejor", "Sebaiknya kita berangkat pagi."], ["lebih baik", "mejor", "Lebih baik naik kereta."],
+      ["kurang", "menos / falta", "Waktunya kurang panjang."], ["cukup", "suficiente", "Uang saya cukup."],
+      ["tergantung", "depende", "Keputusan tergantung cuaca."], ["membantu", "ayudar", "Teman saya membantu."],
+      ["menawarkan", "ofrecer", "Dia menawarkan bantuan."], ["menghubungi", "contactar", "Saya menghubungi teman lama."],
+      ["menerima", "recibir", "Kami menerima kabar baru."], ["mengirim", "enviar", "Saya mengirim pesan singkat."],
+      ["pesan", "mensaje", "Pesan itu jelas."], ["kabar", "noticia", "Kabar dari keluarga baik."],
+      ["cerita", "historia", "Cerita liburan itu lucu."], ["lucu", "gracioso", "Pengalaman itu lucu."],
+      ["menarik", "interesante", "Museum itu menarik."], ["daerah", "region", "Makanan daerah ini pedas."],
+      ["cadangan", "reserva / alternativo", "Kami membuat rencana cadangan."], ["janji", "cita / promesa", "Saya punya janji sore ini."],
+      ["pertemuan", "encuentro", "Pertemuan dimulai tepat waktu."], ["alasan utama", "razon principal", "Alasan utama adalah biaya."],
+      ["meski", "aunque", "Meski sibuk, ia tetap datang."], ["agar", "para que", "Kami datang awal agar siap."]
+    ],
+    4: [
+      ["data", "datos", "Data terbaru belum lengkap."], ["jumlah", "cantidad", "Jumlah penumpang meningkat."],
+      ["warga", "vecinos / ciudadanos", "Warga memberi masukan."], ["pemerintah", "gobierno", "Pemerintah mengumumkan kebijakan."],
+      ["transportasi", "transporte", "Transportasi umum perlu membaik."], ["kemacetan", "atasco", "Kemacetan terjadi pada pagi hari."],
+      ["akses", "acceso", "Akses layanan meningkat."], ["biaya", "coste", "Biaya transportasi menurun."],
+      ["hasil", "resultado", "Hasil pengamatan berbeda."], ["temuan", "hallazgo", "Temuan itu dilaporkan."],
+      ["sumber", "fuente", "Sumber data harus jelas."], ["metode", "metodo", "Metode pengamatan sederhana."],
+      ["mencatat", "registrar", "Petugas mencatat jumlah penumpang."], ["mengukur", "medir", "Tim mengukur dampak program."],
+      ["menilai", "evaluar", "Warga menilai layanan baru."], ["mengumpulkan", "recoger", "Peneliti mengumpulkan masukan."],
+      ["memperbaiki", "mejorar / reparar", "Tim memperbaiki layanan."], ["mengurangi", "reducir", "Program mengurangi biaya."],
+      ["menyebabkan", "causar", "Hujan menyebabkan kemacetan."], ["berdampak", "impactar", "Perubahan berdampak pada warga."],
+      ["sementara", "temporal / mientras", "Sementara itu, data dikumpulkan."], ["secara umum", "en general", "Secara umum, layanan membaik."],
+      ["terutama", "sobre todo", "Masalah terjadi terutama pagi hari."], ["dibandingkan", "comparado", "Biaya lebih rendah dibandingkan bulan lalu."],
+      ["sebelumnya", "anteriormente", "Sebelumnya layanan lebih lambat."], ["selanjutnya", "a continuacion", "Selanjutnya, laporan ditulis."],
+      ["usulan", "propuesta", "Usulan baru dibahas."], ["solusi", "solucion", "Solusi itu cukup efektif."],
+      ["program", "programa", "Program kota dimulai hari ini."], ["publik", "publico", "Layanan publik harus jelas."]
+    ],
+    5: [
+      ["informasi", "informacion", "Informasi berlimpah setiap hari."], ["kualitas", "calidad", "Kualitas diskusi menurun."],
+      ["kuantitas", "cantidad", "Kuantitas data tidak selalu cukup."], ["identitas", "identidad", "Identitas digital makin penting."],
+      ["komunitas", "comunidad", "Komunitas belajar tumbuh cepat."], ["partisipasi", "participacion", "Partisipasi publik meningkat."],
+      ["perilaku", "comportamiento", "Perilaku pengguna berubah."], ["pola", "patron", "Pola perhatian mudah berubah."],
+      ["konteks", "contexto", "Konteks sosial perlu dijelaskan."], ["aspek", "aspecto", "Aspek ekonomi juga penting."],
+      ["menggambarkan", "describir", "Artikel menggambarkan perubahan sosial."], ["menjelaskan", "explicar", "Penulis menjelaskan dampaknya."],
+      ["menganalisis", "analizar", "Pengamat menganalisis kebiasaan digital."], ["menunjukkan", "mostrar", "Data menunjukkan kecenderungan baru."],
+      ["mendorong", "impulsar", "Teknologi mendorong partisipasi."], ["menghambat", "obstaculizar", "Kesenjangan menghambat akses."],
+      ["memperluas", "ampliar", "Platform memperluas peluang belajar."], ["memperkuat", "reforzar", "Dialog memperkuat kepercayaan."],
+      ["melemahkan", "debilitar", "Informasi palsu melemahkan kepercayaan."], ["menimbulkan", "generar", "Perubahan menimbulkan tantangan."],
+      ["bukan hanya", "no solo", "Masalahnya bukan hanya teknologi."], ["melalui", "mediante", "Belajar terjadi melalui praktik."],
+      ["tanpa", "sin", "Tanpa contoh, gagasan sulit dipahami."], ["dari sudut pandang", "desde el punto de vista", "Dari sudut pandang pengguna, ini penting."],
+      ["jangka panjang", "largo plazo", "Dampak jangka panjang belum jelas."], ["jangka pendek", "corto plazo", "Solusi jangka pendek diperlukan."],
+      ["konkret", "concreto", "Contoh konkret membantu pembaca."], ["abstrak", "abstracto", "Gagasan itu masih abstrak."],
+      ["relevansi", "relevancia", "Relevansi topik ini tinggi."], ["keseimbangan", "equilibrio", "Keseimbangan informasi diperlukan."]
+    ],
+    6: [
+      ["implementasi", "implementacion", "Implementasi kebijakan dimulai bulan ini."], ["evaluasi", "evaluacion", "Evaluasi dilakukan setiap kuartal."],
+      ["indikator", "indicador", "Indikator keberhasilan harus jelas."], ["prosedur", "procedimiento", "Prosedur baru disosialisasikan."],
+      ["standar", "estandar", "Standar kualitas ditetapkan."], ["tata kelola", "gobernanza", "Tata kelola proyek diperbaiki."],
+      ["mitigasi", "mitigacion", "Mitigasi risiko disiapkan."], ["kendala", "obstaculo", "Tim mengantisipasi kendala."],
+      ["cakupan", "alcance", "Cakupan proyek diperluas."], ["linimasa", "cronograma", "Linimasa pelaksanaan berubah."],
+      ["pemantauan", "monitoreo", "Pemantauan dilakukan secara berkala."], ["pelaporan", "reporte", "Pelaporan harus akuntabel."],
+      ["menetapkan", "establecer", "Direktur menetapkan prioritas."], ["meninjau", "revisar", "Komite meninjau kepatuhan."],
+      ["menyusun", "elaborar", "Tim menyusun rencana kerja."], ["menyampaikan", "comunicar", "Manajer menyampaikan keputusan."],
+      ["menindaklanjuti", "dar seguimiento", "Tim menindaklanjuti temuan."], ["mendokumentasikan", "documentar", "Sekretaris mendokumentasikan rapat."],
+      ["memastikan", "asegurar", "Manajer memastikan kesiapan."], ["mengoptimalkan", "optimizar", "Tim mengoptimalkan sumber daya."],
+      ["lintas tim", "entre equipos", "Rapat lintas tim dijadwalkan."], ["berkala", "periodico", "Evaluasi berkala diperlukan."],
+      ["sesuai dengan", "de acuerdo con", "Kegiatan sesuai dengan prosedur."], ["terkait dengan", "relacionado con", "Risiko terkait dengan jadwal."],
+      ["apabila", "si / en caso de", "Apabila risiko naik, rencana diubah."], ["sepanjang", "siempre que", "Proyek berjalan sepanjang anggaran cukup."],
+      ["keberlanjutan", "sostenibilidad", "Keberlanjutan program dinilai."], ["transparansi", "transparencia", "Transparansi keputusan penting."],
+      ["efisiensi", "eficiencia", "Efisiensi biaya meningkat."], ["akuntabilitas", "rendicion de cuentas", "Akuntabilitas proses dijaga."]
+    ],
+    7: [
+      ["epistemologis", "epistemologico", "Pertanyaan epistemologis muncul dalam debat itu."], ["ontologis", "ontologico", "Asumsi ontologis perlu dipaparkan."],
+      ["normatif", "normativo", "Isu itu bersifat normatif."], ["empiris", "empirico", "Bukti empiris masih terbatas."],
+      ["argumentasi", "argumentacion", "Argumentasi penulis cukup berimbang."], ["premis", "premisa", "Premis utama perlu diuji."],
+      ["inferensi", "inferencia", "Inferensi tersebut terlalu cepat."], ["koherensi", "coherencia", "Koherensi analisis perlu diperkuat."],
+      ["ambiguitas", "ambiguedad", "Ambiguitas istilah harus dihindari."], ["reduksionisme", "reduccionismo", "Reduksionisme membuat analisis dangkal."],
+      ["dialektika", "dialectica", "Dialektika gagasan tampak jelas."], ["subjektivitas", "subjetividad", "Subjektivitas peneliti diakui."],
+      ["objektivitas", "objetividad", "Objektivitas data diperdebatkan."], ["kausalitas", "causalidad", "Kausalitas tidak otomatis terbukti."],
+      ["korelasi", "correlacion", "Korelasi tidak serta-merta berarti sebab."], ["variabel", "variable", "Variabel utama dianalisis."],
+      ["konseptualisasi", "conceptualizacion", "Konseptualisasi istilah harus konsisten."], ["operasionalisasi", "operacionalizacion", "Operasionalisasi variabel dijelaskan."],
+      ["memvalidasi", "validar", "Peneliti memvalidasi temuan."], ["mengkritisi", "criticar", "Pembaca mengkritisi premis dasar."],
+      ["merevisi", "revisar", "Penulis merevisi kerangka konseptual."], ["menafsirkan", "interpretar", "Pakar menafsirkan bukti."],
+      ["memetakan", "cartografiar / mapear", "Kajian memetakan wacana publik."], ["mengontekstualisasikan", "contextualizar", "Esai mengontekstualisasikan data."],
+      ["secara konseptual", "conceptualmente", "Secara konseptual, argumen itu kuat."], ["secara metodologis", "metodologicamente", "Secara metodologis, desainnya lemah."],
+      ["dengan kata lain", "en otras palabras", "Dengan kata lain, premisnya berubah."], ["di satu sisi", "por un lado", "Di satu sisi, datanya kuat."],
+      ["di sisi lain", "por otro lado", "Di sisi lain, konteksnya terbatas."], ["sebaliknya", "por el contrario", "Sebaliknya, bukti baru memperkuat klaim."]
+    ]
+  };
+
+  Object.keys(supplementalVocabulary).forEach((levelKey) => {
+    vocabulary[Number(levelKey)].push(...supplementalVocabulary[levelKey]);
+  });
+
+  const supplementalScenes = {
+    1: {
+      actions: [["membaca buku kecil", "lee un libro pequeno"], ["mencari pintu keluar", "busca la salida"], ["membeli kopi dingin", "compra cafe frio"], ["bertanya alamat", "pregunta una direccion"]],
+      contexts: [["di depan toko", "delante de la tienda"], ["dengan teman baru", "con un amigo nuevo"]]
+    },
+    2: {
+      actions: [["membayar tagihan listrik", "paga la factura de electricidad"], ["membeli tiket kereta", "compra un billete de tren"], ["beristirahat di rumah", "descansa en casa"], ["mencari alamat dokter", "busca la direccion del medico"]],
+      contexts: [["sesudah makan siang", "despues de almorzar"], ["kalau badan sehat", "si el cuerpo esta sano"]]
+    },
+    3: {
+      actions: [["mengirim pesan kepada teman", "envia un mensaje a un amigo"], ["membuat rencana cadangan", "hace un plan alternativo"], ["menceritakan pengalaman liburan", "cuenta una experiencia de vacaciones"], ["menawarkan bantuan kecil", "ofrece una ayuda pequena"]],
+      contexts: [["sebelum pertemuan dimulai", "antes de que empiece la reunion"], ["agar semua orang siap", "para que todos esten preparados"]]
+    },
+    4: {
+      actions: [["mengumpulkan data warga", "recoge datos de ciudadanos"], ["mengukur akses layanan", "mide el acceso al servicio"], ["melaporkan temuan utama", "reporta el hallazgo principal"], ["mengusulkan solusi publik", "propone una solucion publica"]],
+      contexts: [["dibandingkan bulan sebelumnya", "comparado con el mes anterior"], ["secara umum di kota itu", "en general en esa ciudad"]]
+    },
+    5: {
+      actions: [["menganalisis pola perhatian", "analiza el patron de atencion"], ["memperkuat kepercayaan publik", "refuerza la confianza publica"], ["menghambat partisipasi komunitas", "obstaculiza la participacion comunitaria"], ["menggambarkan dampak jangka panjang", "describe el impacto a largo plazo"]],
+      contexts: [["dari sudut pandang pengguna", "desde el punto de vista del usuario"], ["tanpa mengabaikan konteks", "sin ignorar el contexto"]]
+    },
+    6: {
+      actions: [["menyusun prosedur mitigasi", "elabora un procedimiento de mitigacion"], ["memastikan akuntabilitas proses", "asegura la rendicion de cuentas del proceso"], ["mengoptimalkan alokasi sumber daya", "optimiza la asignacion de recursos"], ["mendokumentasikan indikator keberhasilan", "documenta los indicadores de exito"]],
+      contexts: [["sesuai dengan standar organisasi", "de acuerdo con el estandar organizativo"], ["apabila linimasa berubah", "si cambia el cronograma"]]
+    },
+    7: {
+      actions: [["mengkritisi premis metodologis", "critica la premisa metodologica"], ["mengontekstualisasikan bukti empiris", "contextualiza la evidencia empirica"], ["memvalidasi inferensi utama", "valida la inferencia principal"], ["memetakan ambiguitas konseptual", "mapea la ambiguedad conceptual"]],
+      contexts: [["secara konseptual dan metodologis", "conceptual y metodologicamente"], ["di satu sisi dan di sisi lain", "por un lado y por otro lado"]]
+    }
+  };
+
+  Object.keys(supplementalScenes).forEach((levelKey) => {
+    const level = Number(levelKey);
+    scenes[level].actions.push(...supplementalScenes[level].actions);
+    scenes[level].contexts.push(...supplementalScenes[level].contexts);
+  });
+
   const builderParts = {
     subjects: [
       ["Saya", "yo", "Saya"], ["Kami", "nosotros", "Kami"], ["Dia", "el/ella", "Ia"], ["Teman saya", "mi amigo", "Rekan saya"],
@@ -162,6 +325,53 @@
     objects: [1, 1, 2, 1, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7],
     times: [1, 1, 2, 2, 2, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 7]
   };
+
+  const supplementalBuilderParts = {
+    subjects: {
+      1: [["Guru saya", "mi profesor", "Guru saya"], ["Teman baru", "un amigo nuevo", "Teman baru"]],
+      2: [["Adik saya", "mi hermano menor", "Adik saya"], ["Dokter itu", "ese medico", "Dokter tersebut"]],
+      3: [["Kelompok kecil", "el grupo pequeno", "Kelompok kecil"], ["Teman lama", "un viejo amigo", "Rekan lama"]],
+      4: [["Petugas kota", "el funcionario municipal", "Petugas kota tersebut"], ["Warga setempat", "los residentes locales", "Warga setempat"]],
+      5: [["Pengguna digital", "el usuario digital", "Pengguna digital"], ["Komunitas belajar", "la comunidad de aprendizaje", "Komunitas belajar"]],
+      6: [["Koordinator program", "el coordinador del programa", "Koordinator program"], ["Unit kepatuhan", "la unidad de cumplimiento", "Unit kepatuhan"]],
+      7: [["Analis wacana", "el analista del discurso", "Analis wacana tersebut"], ["Pengkaji metodologi", "el evaluador metodologico", "Pengkaji metodologi tersebut"]]
+    },
+    verbs: {
+      1: [["membuka", "abre", "dibuka", "membuka"], ["membawa", "lleva", "dibawa", "membawa"]],
+      2: [["membersihkan", "limpia", "dibersihkan", "membersihkan"], ["membayar", "paga", "dibayar", "membayar"]],
+      3: [["menghubungi", "contacta", "dihubungi", "menghubungi"], ["menawarkan", "ofrece", "ditawarkan", "menawarkan"]],
+      4: [["mengumpulkan", "recoge", "dikumpulkan", "mengumpulkan"], ["melaporkan", "reporta", "dilaporkan", "melaporkan"]],
+      5: [["menggambarkan", "describe", "digambarkan", "memaparkan"], ["memperkuat", "refuerza", "diperkuat", "memperkuat"]],
+      6: [["memastikan", "asegura", "dipastikan", "memastikan"], ["mendokumentasikan", "documenta", "didokumentasikan", "mendokumentasikan"]],
+      7: [["mengkritisi", "critica", "dikritisi", "mengkritisi"], ["mengontekstualisasikan", "contextualiza", "dikontekstualisasikan", "mengontekstualisasikan"]]
+    },
+    objects: {
+      1: [["buku kecil", "un libro pequeno"], ["alamat rumah", "la direccion de casa"]],
+      2: [["tagihan listrik", "la factura de electricidad"], ["tiket kereta", "el billete de tren"]],
+      3: [["pesan kepada teman", "un mensaje a un amigo"], ["rencana cadangan", "un plan alternativo"]],
+      4: [["data warga", "los datos de ciudadanos"], ["temuan utama", "el hallazgo principal"]],
+      5: [["pola perhatian", "el patron de atencion"], ["konteks sosial", "el contexto social"]],
+      6: [["prosedur mitigasi", "el procedimiento de mitigacion"], ["indikator keberhasilan", "los indicadores de exito"]],
+      7: [["premis metodologis", "la premisa metodologica"], ["bukti empiris", "la evidencia empirica"]]
+    },
+    times: {
+      1: [["di depan toko", "delante de la tienda"], ["dengan teman baru", "con un amigo nuevo"]],
+      2: [["sesudah makan siang", "despues de almorzar"], ["kalau badan sehat", "si el cuerpo esta sano"]],
+      3: [["sebelum pertemuan dimulai", "antes de que empiece la reunion"], ["agar semua orang siap", "para que todos esten preparados"]],
+      4: [["dibandingkan bulan sebelumnya", "comparado con el mes anterior"], ["secara umum di kota itu", "en general en esa ciudad"]],
+      5: [["dari sudut pandang pengguna", "desde el punto de vista del usuario"], ["tanpa mengabaikan konteks", "sin ignorar el contexto"]],
+      6: [["sesuai dengan standar organisasi", "de acuerdo con el estandar organizativo"], ["apabila linimasa berubah", "si cambia el cronograma"]],
+      7: [["secara konseptual dan metodologis", "conceptual y metodologicamente"], ["di satu sisi dan di sisi lain", "por un lado y por otro lado"]]
+    }
+  };
+
+  Object.keys(supplementalBuilderParts).forEach((group) => {
+    Object.keys(supplementalBuilderParts[group]).forEach((levelKey) => {
+      const additions = supplementalBuilderParts[group][levelKey];
+      builderParts[group].push(...additions);
+      builderPartLevels[group].push(...additions.map(() => Number(levelKey)));
+    });
+  });
 
   function makeLibrary() {
     const flashcards = [];
