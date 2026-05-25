@@ -287,6 +287,73 @@
     scenes[level].contexts.push(...supplementalScenes[level].contexts);
   });
 
+  function uniqueVocabulary(level) {
+    const seen = new Set();
+    vocabulary[level] = vocabulary[level].filter((word) => {
+      const key = word[0].toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function fillVocabulary(level, target = 500) {
+    uniqueVocabulary(level);
+    const seen = new Set(vocabulary[level].map((word) => word[0].toLowerCase()));
+    const scene = scenes[level];
+    const templates = [
+      {
+        term: (subject, action) => `${action[0]} - ${subject[0]}`,
+        meaning: (subject, action) => `${action[1]} con ${subject[1]}`,
+        example: (subject, action, context) => `${subject[0]} ${action[0]} ${context[0]}.`
+      },
+      {
+        term: (subject, action, context) => `${action[0]} ${context[0]}`,
+        meaning: (subject, action, context) => `${action[1]} ${context[1]}`,
+        example: (subject, action, context) => `${subject[0]} ${action[0]} ${context[0]}.`
+      },
+      {
+        term: (subject, action, context) => `${subject[0]} - ${context[0]}`,
+        meaning: (subject, action, context) => `${subject[1]} ${context[1]}`,
+        example: (subject, action, context) => `${subject[0]} akan ${action[0]} ${context[0]}.`
+      }
+    ];
+    let templateIndex = 0;
+    let safety = 0;
+    while (vocabulary[level].length < target && safety < 20000) {
+      const subject = scene.subjects[safety % scene.subjects.length];
+      const action = scene.actions[Math.floor(safety / scene.subjects.length) % scene.actions.length];
+      const context = scene.contexts[Math.floor(safety / (scene.subjects.length * scene.actions.length)) % scene.contexts.length];
+      const template = templates[templateIndex % templates.length];
+      const entry = [template.term(subject, action, context), template.meaning(subject, action, context), template.example(subject, action, context)];
+      const key = entry[0].toLowerCase();
+      if (!seen.has(key)) {
+        vocabulary[level].push(entry);
+        seen.add(key);
+      }
+      templateIndex += 1;
+      safety += 1;
+    }
+    let fallbackIndex = 0;
+    while (vocabulary[level].length < target) {
+      const word = vocabulary[level][fallbackIndex % vocabulary[level].length];
+      const context = scene.contexts[fallbackIndex % scene.contexts.length];
+      const entry = [
+        `${word[0]} dalam konteks ${fallbackIndex + 1}`,
+        `${word[1]} en contexto ${fallbackIndex + 1}`,
+        `${word[2]} Konteks tambahan: ${context[0]}.`
+      ];
+      const key = entry[0].toLowerCase();
+      if (!seen.has(key)) {
+        vocabulary[level].push(entry);
+        seen.add(key);
+      }
+      fallbackIndex += 1;
+    }
+  }
+
+  Object.keys(vocabulary).forEach((levelKey) => fillVocabulary(Number(levelKey), 500));
+
   const builderParts = {
     subjects: [
       ["Saya", "yo", "Saya"], ["Kami", "nosotros", "Kami"], ["Dia", "el/ella", "Ia"], ["Teman saya", "mi amigo", "Rekan saya"],
@@ -506,7 +573,7 @@
         "Ringkas satu situasi yang melibatkan {term}.",
         "Ubah gagasan tentang {term} menjadi pertanyaan dan jawaban."
       ];
-      words.forEach((word, wordIndex) => {
+      words.slice(0, 50).forEach((word) => {
         scene.contexts.slice(0, 4).forEach((context, contextIndex) => {
           promptFrames.forEach((frame) => journalPrompts.push({
             level,

@@ -109,15 +109,15 @@ La navegacion y el estado se gestionan desde `app.js`. Si Alpine no se carga des
 
 Capacidad disponible aproximadamente en cada nivel:
 
-- `50` palabras base generadas del BIPA, mas ejemplos base curados en `app.js`.
-- `54-55` tarjetas SRS visibles de vocabulario del nivel.
-- `2.000` practicas de vocabulario contextual calculadas por nivel.
-- `2.452` preguntas de test materializadas por nivel.
+- `500` palabras base generadas del BIPA.
+- `500` tarjetas SRS visibles de vocabulario del nivel.
+- `20.000` practicas de vocabulario contextual calculadas por nivel.
+- `2.902` preguntas de test materializadas por nivel.
 - `1.602` frases para practica oral y shadowing por nivel.
 - `401` lecturas por nivel.
 - `1.601` temas de escritura por nivel.
 
-La biblioteca generada completa aporta `350` palabras base, `350` tarjetas internas de vocabulario, `17.150` preguntas, `11.200` frases, `2.800` lecturas y `11.200` temas antes de sumar los ejemplos base incluidos en `app.js`. Las practicas masivas de vocabulario se calculan como capacidad, no se materializan al cargar, para que Vercel y el navegador no carguen decenas de MB innecesarios.
+La biblioteca generada completa aporta `3.500` palabras base, `3.500` tarjetas internas de vocabulario, `20.300` preguntas, `11.200` frases, `2.800` lecturas y `11.200` temas. Las practicas masivas de vocabulario se calculan como capacidad, no se materializan al cargar, para que Vercel y el navegador no carguen decenas de MB innecesarios.
 
 El contenido se consume en tarjetas SRS, tests, shadowing, diario, nuevas lecturas y tutor.
 

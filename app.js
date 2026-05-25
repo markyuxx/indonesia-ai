@@ -567,7 +567,7 @@ function indonesianApp() {
       return [...this.flashcards, ...this.customCards];
     },
     isBaseVocabularyCard(card) {
-      return /^lib-word-\d+-\d+$/.test(card?.id || "") || /^b\d-/.test(card?.id || "");
+      return /^lib-word-\d+-\d+$/.test(card?.id || "");
     },
     sortByBipaContent(items) {
       return [...items].sort((a, b) => {
