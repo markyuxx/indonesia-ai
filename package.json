@@ -5,16 +5,11 @@
   "description": "Web local para aprender bahasa Indonesia con BIPA, UKBI e input comprensible.",
   "scripts": {
     "start": "node server.js",
+    "check": "node --check app.js && node --check content-library.js && node --check daily-reset.js && node --check server.js",
     "localhost:on": "powershell -ExecutionPolicy Bypass -File ./start-localhost.ps1",
     "localhost:off": "powershell -ExecutionPolicy Bypass -File ./stop-localhost.ps1",
     "localhost:toggle": "powershell -ExecutionPolicy Bypass -File ./toggle-localhost.ps1"
   },
-  "dependencies": {
-    "@tailwindcss/browser": "cdn",
-    "alpinejs": "cdn",
-    "canvas-confetti": "cdn",
-    "chart.js": "cdn",
-    "lucide": "cdn"
-  },
+  "dependencies": {},
   "devDependencies": {}
 }

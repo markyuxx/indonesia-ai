@@ -560,15 +560,13 @@ function indonesianApp() {
       return [...this.flashcards, ...this.customCards];
     },
     get libraryWords() {
-      return this.flashcards.filter((card) => card.id.indexOf("lib-word-") === 0);
+      return this.flashcards.filter((card) => /^lib-word-\d+-\d+$/.test(card.id));
     },
     get tutorWordPool() {
       return this.libraryWords.filter((card) => Number(card.level) === Number(this.selectedLevel));
     },
     get tutorCoreWords() {
-      return this.libraryWords.filter((card) =>
-        /^lib-word-\d+-\d+$/.test(card.id) && Number(card.level) === Number(this.selectedLevel)
-      );
+      return this.tutorWordPool;
     },
     get levelFlashcards() {
       return this.flashcards.filter((card) => Number(card.level) === Number(this.selectedLevel));
@@ -981,7 +979,7 @@ function indonesianApp() {
       this.refreshIcons();
     },
     generateTutorText(includeAllWords = false) {
-      const words = includeAllWords ? this.tutorWordPool : this.tutorWordPool.slice(0, 120);
+      const words = includeAllWords ? this.tutorCoreWords : this.tutorCoreWords.slice(0, 12);
       return words.map((card) => card.example).join(" ");
     },
     activateTutorMode(mode) {
@@ -1018,7 +1016,7 @@ function indonesianApp() {
       } else if (/todas|completa|todo el vocabulario|biblioteca entera|vocabulario de mi nivel/.test(query)) {
         mode = "corpus";
         title = `Biblioteca BIPA ${level}`;
-        reply = `Texto acumulativo BIPA ${level} con ${this.levelVocabularyCapacity.toLocaleString("es-ES")} practicas de vocabulario del nivel: ${this.generateTutorText(true)}`;
+        reply = `Texto acumulativo BIPA ${level} con ${this.levelVocabularyCapacity.toLocaleString("es-ES")} palabras base del nivel: ${this.generateTutorText(true)}`;
       } else if (/texto|lectura|historia|parrafo/.test(query)) {
         mode = "text";
         title = `Lectura BIPA ${level}`;
@@ -1036,6 +1034,15 @@ function indonesianApp() {
       } else if (/palabra|vocabulario|kata/.test(query)) {
         mode = "words";
         title = `Palabras BIPA ${level}`;
+        if (!this.tutorCoreWords.length) {
+          reply = `No hay palabras base cargadas para BIPA ${level}.`;
+          this.activeTutorMode = mode;
+          this.tutorActivityTitle = title;
+          this.tutorResponse = reply;
+          this.tutorPrompt = "";
+          this.persist();
+          return;
+        }
         const start = ((this.tutorTurn - 1) * 3) % this.tutorCoreWords.length;
         const cards = Array.from({ length: 6 }, (_, index) =>
           this.tutorCoreWords[(start + index) % this.tutorCoreWords.length]
