@@ -111,13 +111,13 @@ Capacidad disponible aproximadamente en cada nivel:
 
 - `50` palabras base generadas del BIPA, mas ejemplos base curados en `app.js`.
 - `54-55` tarjetas SRS visibles de vocabulario del nivel.
-- `6.000` practicas de vocabulario contextual.
-- `15.412` preguntas de test.
-- `3.842` frases para practica oral y shadowing.
-- `960` lecturas generadas.
-- `4.801` temas de escritura.
+- `2.000` practicas de vocabulario contextual calculadas por nivel.
+- `2.452` preguntas de test materializadas por nivel.
+- `1.602` frases para practica oral y shadowing por nivel.
+- `401` lecturas por nivel.
+- `1.601` temas de escritura por nivel.
 
-La biblioteca generada completa aporta `350` palabras base, `69.230` tarjetas internas, `107.870` preguntas, `26.880` frases, `6.720` lecturas y `33.600` temas antes de sumar los ejemplos base incluidos en `app.js`.
+La biblioteca generada completa aporta `350` palabras base, `350` tarjetas internas de vocabulario, `17.150` preguntas, `11.200` frases, `2.800` lecturas y `11.200` temas antes de sumar los ejemplos base incluidos en `app.js`. Las practicas masivas de vocabulario se calculan como capacidad, no se materializan al cargar, para que Vercel y el navegador no carguen decenas de MB innecesarios.
 
 El contenido se consume en tarjetas SRS, tests, shadowing, diario, nuevas lecturas y tutor.
 

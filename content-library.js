@@ -409,6 +409,8 @@
       const words = vocabulary[level];
       const scene = scenes[level];
       const phrases = [];
+      const shadowLimit = 1600;
+      const phraseQuizLimit = 600;
 
       words.forEach((word, index) => {
         flashcards.push({
@@ -424,17 +426,6 @@
           choices: variedChoices(word[1], words[(index + 3) % words.length][1], words[(index + 9) % words.length][1], index),
           answer: word[1],
           note: `Ejemplo: ${word[2]}`
-        });
-        scene.contexts.forEach((context, contextIndex) => {
-          vocabularyPracticeFrames.forEach((instruction, instructionIndex) => {
-            flashcards.push({
-              id: `lib-word-practice-${level}-${index}-${contextIndex}-${instructionIndex}`,
-              level,
-              front: `${word[0]} - ${instruction}`,
-              back: `${word[1]} | Contexto: ${context[1]}`,
-              example: `${word[2]} Latihan: ${context[0]}.`
-            });
-          });
         });
       });
 
@@ -454,14 +445,8 @@
       });
 
       phrases.forEach((phrase, index) => {
-        shadowLines.push(phrase);
-        flashcards.push({
-          id: `lib-phrase-${level}-${index}`,
-          level,
-          front: phrase.id,
-          back: phrase.es,
-          example: "Frase contextual para comprension y produccion."
-        });
+        if (index < shadowLimit) shadowLines.push(phrase);
+        if (index >= phraseQuizLimit) return;
         const alternateA = phrases[(index + 7) % phrases.length];
         const alternateB = phrases[(index + 23) % phrases.length];
         const otherSubjectA = scene.subjects[(phrase.subjectIndex + 1) % scene.subjects.length][0];
@@ -500,7 +485,7 @@
       });
 
       readings[level] = [];
-      for (let index = 0; index < phrases.length; index += 4) {
+      for (let index = 0; index < Math.min(phrases.length, shadowLimit); index += 4) {
         const group = phrases.slice(index, index + 4);
         readings[level].push({
           topic: `Biblioteca BIPA ${level} - Escena ${readings[level].length + 1}`,
@@ -521,8 +506,8 @@
         "Ringkas satu situasi yang melibatkan {term}.",
         "Ubah gagasan tentang {term} menjadi pertanyaan dan jawaban."
       ];
-      words.forEach((word) => {
-        scene.contexts.forEach((context) => {
+      words.forEach((word, wordIndex) => {
+        scene.contexts.slice(0, 4).forEach((context, contextIndex) => {
           promptFrames.forEach((frame) => journalPrompts.push({
             level,
             prompt: `${frame.replace("{term}", word[0])} Konteks: ${context[0]}.`
@@ -546,7 +531,15 @@
       objects: builderParts.objects.map((part, index) => ({ id: part[0], es: part[1], level: builderPartLevels.objects[index] })),
       times: builderParts.times.map((part, index) => ({ id: part[0], es: part[1], level: builderPartLevels.times[index] }))
     };
-    const builderCombinations = parts.subjects.length * parts.verbs.length * parts.objects.length * parts.times.length * 5;
+    const builderCombinations = Object.keys(vocabulary).reduce((total, levelKey) => {
+      const level = Number(levelKey);
+      return total
+        + parts.subjects.filter((part) => part.level === level).length
+        * parts.verbs.filter((part) => part.level === level).length
+        * parts.objects.filter((part) => part.level === level).length
+        * parts.times.filter((part) => part.level === level).length
+        * 5;
+    }, 0);
 
     return {
       flashcards,
@@ -558,7 +551,7 @@
       sentenceParts: parts,
       stats: {
         vocabulary: Object.values(vocabulary).reduce((total, group) => total + group.length, 0),
-        vocabularyActivities: flashcards.filter((card) => card.id.indexOf("lib-word-") === 0).length,
+        vocabularyActivities: Object.values(vocabulary).reduce((total, group) => total + group.length * vocabularyPracticeFrames.length * 4, 0),
         flashcards: flashcards.length,
         quizzes: quizzes.length,
         phrases: shadowLines.length,
