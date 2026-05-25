@@ -75,7 +75,7 @@
           </div>
           <div>
             <span x-text="levelCardCapacity.toLocaleString('es-ES')"></span>
-            <small>max. tarjetas nivel</small>
+            <small>tarjetas vocab. nivel</small>
           </div>
           <div>
             <span x-text="levelPhraseCapacity.toLocaleString('es-ES')"></span>
@@ -343,6 +343,23 @@
           </template>
         </div>
 
+        <div class="bipa-inventory" aria-label="Inventario BIPA 1-7">
+          <template x-for="item in bipaInventory" :key="item.id">
+            <button
+              type="button"
+              class="bipa-inventory-item"
+              :class="{ active: selectedLevelId === item.id }"
+              @click="selectLevel(item.id)"
+            >
+              <strong x-text="`BIPA ${item.id}`"></strong>
+              <span><b x-text="item.vocabulary"></b> vocab.</span>
+              <span><b x-text="item.tests.toLocaleString('es-ES')"></b> test</span>
+              <span><b x-text="item.phrases.toLocaleString('es-ES')"></b> frases</span>
+              <span><b x-text="item.writing.toLocaleString('es-ES')"></b> diario</span>
+            </button>
+          </template>
+        </div>
+
         <div class="tool-workspace">
           <article class="tool-surface" x-show="activeTool === 'cards'">
             <div class="tool-header">
@@ -353,7 +370,7 @@
               <div class="mini-stats">
                 <span><strong x-text="dueLevelCards.length"></strong><small>por revisar nivel</small></span>
                 <span><strong x-text="knownLevelCards"></strong><small>dominadas nivel</small></span>
-                <span><strong x-text="levelCardCapacity.toLocaleString('es-ES')"></strong><small>max. BIPA</small></span>
+                <span><strong x-text="levelCardCapacity.toLocaleString('es-ES')"></strong><small>vocab. SRS nivel</small></span>
               </div>
             </div>
             <div class="flashcard" :class="{ flipped: flashcardFlipped }" @click="toggleFlashcard()">

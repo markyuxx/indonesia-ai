@@ -566,8 +566,26 @@ function indonesianApp() {
     get allFlashcards() {
       return [...this.flashcards, ...this.customCards];
     },
+    isBaseVocabularyCard(card) {
+      return /^lib-word-\d+-\d+$/.test(card?.id || "") || /^b\d-/.test(card?.id || "");
+    },
+    sortByBipaContent(items) {
+      return [...items].sort((a, b) => {
+        const levelDiff = Number(a.level || 0) - Number(b.level || 0);
+        if (levelDiff) return levelDiff;
+        return String(a.id || a.prompt || a.title || "").localeCompare(String(b.id || b.prompt || b.title || ""), "id");
+      });
+    },
     get libraryWords() {
       return this.flashcards.filter((card) => /^lib-word-\d+-\d+$/.test(card.id));
+    },
+    get levelVocabularyCards() {
+      return this.sortByBipaContent(this.flashcards.filter((card) =>
+        this.isSelectedLevel(card) && this.isBaseVocabularyCard(card)
+      ));
+    },
+    get levelCustomCards() {
+      return this.sortByBipaContent(this.customCards.filter((card) => this.isSelectedLevel(card)));
     },
     get tutorWordPool() {
       return this.libraryWords.filter((card) => this.isSelectedLevel(card));
@@ -576,7 +594,7 @@ function indonesianApp() {
       return this.tutorWordPool;
     },
     get levelFlashcards() {
-      return this.flashcards.filter((card) => this.isSelectedLevel(card));
+      return [...this.levelVocabularyCards, ...this.levelCustomCards];
     },
     get levelCardCapacity() {
       return this.levelFlashcards.length;
@@ -585,7 +603,7 @@ function indonesianApp() {
       return this.tutorWordPool.length;
     },
     get flashcardPool() {
-      return this.allFlashcards.filter((card) => this.isSelectedLevel(card));
+      return this.levelFlashcards;
     },
     get currentFlashcard() {
       if (!this.flashcardPool.length) {
@@ -620,7 +638,7 @@ function indonesianApp() {
       return this.levelFlashcards.filter((card) => (this.flashcardReviews[card.id]?.streak || 0) >= 3).length;
     },
     get quizPool() {
-      return this.quizBank.filter((item) => this.isSelectedLevel(item));
+      return this.sortByBipaContent(this.quizBank.filter((item) => this.isSelectedLevel(item)));
     },
     get levelQuizCapacity() {
       return this.quizPool.length;
@@ -701,7 +719,7 @@ function indonesianApp() {
       return this.activeSentenceParts.subjects.length * this.activeSentenceParts.verbs.length * this.activeSentenceParts.objects.length * this.activeSentenceParts.times.length * this.sentenceModes.length;
     },
     get shadowPool() {
-      return this.shadowLines.filter((item) => this.isSelectedLevel(item));
+      return this.sortByBipaContent(this.shadowLines.filter((item) => this.isSelectedLevel(item)));
     },
     get levelPhraseCapacity() {
       return this.shadowPool.length;
@@ -717,7 +735,7 @@ function indonesianApp() {
       return this.shadowPool[this.shadowIndex % this.shadowPool.length];
     },
     get journalPromptPool() {
-      return this.journalPrompts.filter((item) => this.isSelectedLevel(item));
+      return this.sortByBipaContent(this.journalPrompts.filter((item) => this.isSelectedLevel(item)));
     },
     get levelWritingCapacity() {
       return this.journalPromptPool.length;
@@ -740,6 +758,18 @@ function indonesianApp() {
     },
     get activeMissions() {
       return this.missions.filter((mission) => this.isSelectedLevel(mission)).slice(0, 4);
+    },
+    get bipaInventory() {
+      return this.levels.map((level) => {
+        const id = Number(level.id);
+        return {
+          id,
+          vocabulary: this.flashcards.filter((card) => Number(card.level) === id && this.isBaseVocabularyCard(card)).length,
+          tests: this.quizBank.filter((item) => Number(item.level) === id).length,
+          phrases: this.shadowLines.filter((item) => Number(item.level) === id).length,
+          writing: this.journalPrompts.filter((item) => Number(item.level) === id).length
+        };
+      });
     },
     get retellWords() {
       return this.retellText.trim().split(/\s+/).filter(Boolean).length;
