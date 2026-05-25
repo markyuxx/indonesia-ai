@@ -1,0 +1,20 @@
+{
+  "name": "indonesio-total-bipa-coach",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Web local para aprender bahasa Indonesia con BIPA, UKBI e input comprensible.",
+  "scripts": {
+    "start": "node server.js",
+    "localhost:on": "powershell -ExecutionPolicy Bypass -File ./start-localhost.ps1",
+    "localhost:off": "powershell -ExecutionPolicy Bypass -File ./stop-localhost.ps1",
+    "localhost:toggle": "powershell -ExecutionPolicy Bypass -File ./toggle-localhost.ps1"
+  },
+  "dependencies": {
+    "@tailwindcss/browser": "cdn",
+    "alpinejs": "cdn",
+    "canvas-confetti": "cdn",
+    "chart.js": "cdn",
+    "lucide": "cdn"
+  },
+  "devDependencies": {}
+}

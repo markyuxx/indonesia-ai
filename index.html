@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Indonesio Total | BIPA + Input Comprensible</title>
+    <meta
+      name="description"
+      content="Agente local para aprender bahasa Indonesia con marco BIPA, referencia UKBI e input comprensible activo."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Serif:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
+  </head>
+  <body x-data="indonesianApp()" x-init="init()" :class="{ 'focus-mode': focusMode }">
+    <div class="progress-line" :style="`width:${overallProgress}%`"></div>
+
+    <header class="site-header">
+      <a class="brand" href="#inicio" aria-label="Inicio">
+        <span class="brand-mark">ID</span>
+        <span>
+          <strong>Indonesio Total</strong>
+          <small>BIPA active coach</small>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Navegacion principal">
+        <a href="#marco">Marco</a>
+        <a href="#plan">Plan</a>
+        <a href="#input">Input</a>
+        <a href="#herramientas">Herramientas</a>
+        <a href="#ukbi">UKBI</a>
+        <a href="#localhost">Localhost</a>
+      </nav>
+      <button class="icon-btn" type="button" @click="focusMode = !focusMode" :aria-pressed="focusMode">
+        <i data-lucide="scan-line"></i>
+        <span x-text="focusMode ? 'Modo normal' : 'Foco'"></span>
+      </button>
+    </header>
+
+    <main>
+      <section id="inicio" class="hero">
+        <img src="./assets/hero-indonesian-learning.png" alt="" class="hero-img" />
+        <div class="hero-shade"></div>
+        <div class="hero-content">
+          <p class="eyebrow">Agente experto en bahasa Indonesia</p>
+          <h1>Aprende indonesio con una ruta oficial, activa y medible.</h1>
+          <p class="hero-copy">
+            Una web local para estudiar desde BIPA 1 hasta BIPA 7, entrenar input comprensible,
+            producir sin bloquearte y medir tu progreso con referencia UKBI.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-action" href="#input">
+              <i data-lucide="headphones"></i>
+              Entrenar ahora
+            </a>
+            <a class="secondary-action" href="#marco">
+              <i data-lucide="map"></i>
+              Ver ruta oficial
+            </a>
+          </div>
+        </div>
+        <div class="hero-metrics" aria-label="Resumen del sistema">
+          <div>
+            <span>7</span>
+            <small>niveles BIPA</small>
+          </div>
+          <div>
+            <span x-text="levelCardCapacity.toLocaleString('es-ES')"></span>
+            <small>max. tarjetas nivel</small>
+          </div>
+          <div>
+            <span x-text="levelPhraseCapacity.toLocaleString('es-ES')"></span>
+            <small>max. frases nivel</small>
+          </div>
+          <div>
+            <span x-text="`${overallProgress}%`"></span>
+            <small>progreso local</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="band intro-band">
+        <div class="section-grid">
+          <div>
+            <p class="section-kicker">Indice recomendado</p>
+            <h2>La pagina esta pensada como un sistema de entrenamiento, no como una lista de lecciones.</h2>
+          </div>
+          <div class="index-list">
+            <a href="#marco"><span>01</span> Marco oficial BIPA y medicion UKBI</a>
+            <a href="#plan"><span>02</span> Plan diario segun nivel, tiempo y objetivo</a>
+            <a href="#input"><span>03</span> Input comprensible con escucha, lectura y retelling</a>
+            <a href="#agente"><span>04</span> Prompt del agente y reglas de feedback</a>
+            <a href="#localhost"><span>05</span> Automatizacion para activar o apagar localhost</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="marco" class="band">
+        <div class="section-head">
+          <p class="section-kicker">Marco actual</p>
+          <h2>BIPA 1-7 como columna vertebral. UKBI como prueba de realidad.</h2>
+          <p>
+            BIPA es la ruta de aprendizaje para hablantes no nativos. El estandar de graduacion usado aqui
+            se basa en Permendikbud No. 27/2017 y en materiales oficiales Sahabatku Indonesia. La equivalencia
+            CEFR es orientativa, no una conversion oficial exacta.
+          </p>
+        </div>
+
+        <div class="level-layout">
+          <aside class="level-selector" aria-label="Seleccion de nivel">
+            <template x-for="level in levels" :key="level.id">
+              <button
+                type="button"
+                class="level-tab"
+                :class="{ active: selectedLevel === level.id }"
+                @click="selectLevel(level.id)"
+              >
+                <span x-text="`BIPA ${level.id}`"></span>
+                <small x-text="level.short"></small>
+              </button>
+            </template>
+          </aside>
+
+          <article class="level-panel">
+            <div class="level-title-row">
+              <div>
+                <p class="tag" x-text="currentLevel.cefr"></p>
+                <h3 x-text="currentLevel.title"></h3>
+              </div>
+              <span class="level-number" x-text="`0${currentLevel.id}`"></span>
+            </div>
+            <p class="official-summary" x-text="currentLevel.official"></p>
+
+            <div class="skill-columns">
+              <div>
+                <h4><i data-lucide="target"></i> Debes poder</h4>
+                <ul>
+                  <template x-for="item in currentLevel.canDo" :key="item">
+                    <li x-text="item"></li>
+                  </template>
+                </ul>
+              </div>
+              <div>
+                <h4><i data-lucide="book-open-check"></i> Input ideal</h4>
+                <ul>
+                  <template x-for="item in currentLevel.input" :key="item">
+                    <li x-text="item"></li>
+                  </template>
+                </ul>
+              </div>
+              <div>
+                <h4><i data-lucide="wrench"></i> Sistema linguistico</h4>
+                <ul>
+                  <template x-for="item in currentLevel.system" :key="item">
+                    <li x-text="item"></li>
+                  </template>
+                </ul>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="plan" class="band tinted">
+        <div class="section-head compact">
+          <p class="section-kicker">Motor de estudio</p>
+          <h2>Tu sesion diaria debe crear comprension, memoria y uso real.</h2>
+        </div>
+
+        <div class="planner">
+          <div class="planner-controls">
+            <label>
+              Nivel actual
+              <select x-model.number="selectedLevel" @change="persist()">
+                <template x-for="level in levels" :key="level.id">
+                  <option :value="level.id" x-text="`BIPA ${level.id} - ${level.short}`"></option>
+                </template>
+              </select>
+            </label>
+            <label>
+              Minutos al dia
+              <input type="range" min="30" max="150" step="15" x-model.number="dailyMinutes" @input="persist()" />
+              <strong x-text="`${dailyMinutes} min`"></strong>
+            </label>
+            <label>
+              Objetivo principal
+              <select x-model="goal" @change="persist()">
+                <option value="travel">Viajar y sobrevivir bien</option>
+                <option value="social">Conversar con fluidez social</option>
+                <option value="work">Trabajo y reuniones</option>
+                <option value="academic">Lectura, debate y UKBI alto</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="daily-plan">
+            <template x-for="block in computedPlan" :key="block.id">
+              <button
+                class="plan-block"
+                type="button"
+                :class="{ done: completedToday.includes(block.id) }"
+                @click="toggleToday(block.id)"
+              >
+                <span class="plan-time" x-text="`${block.minutes} min`"></span>
+                <strong x-text="block.title"></strong>
+                <small x-text="block.detail"></small>
+                <i :data-lucide="completedToday.includes(block.id) ? 'check-circle-2' : block.icon"></i>
+              </button>
+            </template>
+          </div>
+        </div>
+
+        <div class="principles">
+          <div>
+            <h3>Regla de oro: 80% comprensible, 20% esfuerzo.</h3>
+            <p>
+              Si entiendes menos del 80%, bajas nivel o eliges input mas estrecho. Si entiendes mas del 95%,
+              subes dificultad. El punto optimo es entender el mensaje y aun asi tener que inferir.
+            </p>
+          </div>
+          <div class="ratio-meter" aria-label="Ratio de entrenamiento">
+            <span style="--value:80">Input</span>
+            <span style="--value:20">Output</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="input" class="band input-section">
+        <div class="section-head">
+          <p class="section-kicker">Entrenador activo</p>
+          <h2>Input comprensible con ciclos: escuchar, leer, recordar, decir.</h2>
+          <p>
+            No traduzcas palabra por palabra al principio. Tu objetivo es construir una pelicula mental del mensaje,
+            y solo despues mirar glosario, notas y traduccion.
+          </p>
+        </div>
+
+        <div class="input-workbench">
+          <div class="deck-panel">
+            <div class="deck-toolbar">
+              <label>
+                Nivel
+                <select x-model.number="selectedLevel" @change="selectLevel(selectedLevel)">
+                  <template x-for="level in levels" :key="level.id">
+                    <option :value="level.id" x-text="`BIPA ${level.id}`"></option>
+                  </template>
+                </select>
+              </label>
+              <label>
+                Velocidad
+                <input type="range" min="0.65" max="1" step="0.05" x-model.number="speechRate" />
+              </label>
+              <button class="tool-btn" type="button" @click="speakCurrent()">
+                <i data-lucide="volume-2"></i>
+                Escuchar
+              </button>
+              <span class="pool-count"><strong x-text="levelReadingCapacity.toLocaleString('es-ES')"></strong> lecturas max. nivel</span>
+            </div>
+
+            <article class="input-card">
+              <p class="tag" x-text="currentDeck.topic"></p>
+              <h3 x-text="currentDeck.title"></h3>
+              <p class="indonesian-text" x-text="currentDeck.text"></p>
+              <div class="input-actions">
+                <button type="button" @click="nextReading()">
+                  <i data-lucide="shuffle"></i>
+                  Nueva lectura
+                </button>
+                <button type="button" @click="showTranslation = !showTranslation">
+                  <i data-lucide="languages"></i>
+                  Traduccion
+                </button>
+                <button type="button" @click="showGlossary = !showGlossary">
+                  <i data-lucide="list-plus"></i>
+                  Glosario
+                </button>
+                <button type="button" @click="startDictation()">
+                  <i data-lucide="keyboard"></i>
+                  Dictado
+                </button>
+              </div>
+              <p class="translation" x-show="showTranslation" x-transition x-text="currentDeck.translation"></p>
+              <div class="glossary" x-show="showGlossary" x-transition>
+                <template x-for="word in currentDeck.glossary" :key="word.term">
+                  <span><strong x-text="word.term"></strong><em x-text="word.meaning"></em></span>
+                </template>
+              </div>
+            </article>
+          </div>
+
+          <aside class="coach-panel">
+            <h3><i data-lucide="sparkles"></i> Ciclo de 6 pasadas</h3>
+            <ol class="cycle-list">
+              <template x-for="step in inputCycle" :key="step.title">
+                <li>
+                  <strong x-text="step.title"></strong>
+                  <span x-text="step.detail"></span>
+                </li>
+              </template>
+            </ol>
+            <div class="retell-box">
+              <label for="retell">Retell en indonesio</label>
+              <textarea id="retell" x-model="retellText" placeholder="Tulis ulang isi teks dengan kata-katamu sendiri..."></textarea>
+              <div class="retell-score">
+                <span x-text="`${retellWords} palabras`"></span>
+                <span x-text="retellFeedback"></span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="herramientas" class="band tools-section">
+        <div class="section-head">
+          <p class="section-kicker">Laboratorio activo</p>
+          <h2>Mas practica, menos pasividad: tarjetas, tests, frases y voz.</h2>
+          <p>
+            Cada modulo entrena una parte distinta del ciclo: memoria, comprension, produccion,
+            automatizacion oral y escritura. El sistema guarda tu avance en este navegador.
+          </p>
+        </div>
+
+        <div class="tool-tabs" aria-label="Herramientas de aprendizaje">
+          <template x-for="tool in toolTabs" :key="tool.id">
+            <button
+              type="button"
+              class="tool-tab"
+              :class="{ active: activeTool === tool.id }"
+              @click="activeTool = tool.id; persist(); refreshIcons()"
+            >
+              <i :data-lucide="tool.icon"></i>
+              <span x-text="tool.label"></span>
+            </button>
+          </template>
+        </div>
+
+        <div class="tool-workspace">
+          <article class="tool-surface" x-show="activeTool === 'cards'">
+            <div class="tool-header">
+              <div>
+                <p class="tag">Tarjetas SRS</p>
+                <h3>Recuerda con intervalos, no con fuerza bruta.</h3>
+              </div>
+              <div class="mini-stats">
+                <span><strong x-text="dueLevelCards.length"></strong><small>por revisar nivel</small></span>
+                <span><strong x-text="knownLevelCards"></strong><small>dominadas nivel</small></span>
+                <span><strong x-text="levelCardCapacity.toLocaleString('es-ES')"></strong><small>max. BIPA</small></span>
+              </div>
+            </div>
+            <div class="flashcard" :class="{ flipped: flashcardFlipped }" @click="toggleFlashcard()">
+              <span class="level-pill" x-text="`BIPA ${currentFlashcard.level}`"></span>
+              <p x-text="flashcardFlipped ? currentFlashcard.back : currentFlashcard.front"></p>
+              <small x-text="flashcardFlipped ? currentFlashcard.example : 'Pulsa para revelar significado y ejemplo'"></small>
+            </div>
+            <div class="srs-actions">
+              <button type="button" @click="speakText(currentFlashcard.front, 0.82)">
+                <i data-lucide="volume-2"></i>
+                Oir
+              </button>
+              <button type="button" @click="gradeFlashcard(0)">Otra vez</button>
+              <button type="button" @click="gradeFlashcard(1)">Dificil</button>
+              <button type="button" @click="gradeFlashcard(2)">Bien</button>
+              <button type="button" @click="gradeFlashcard(3)">Facil</button>
+            </div>
+          </article>
+
+          <article class="tool-surface" x-show="activeTool === 'quiz'">
+            <div class="tool-header">
+              <div>
+                <p class="tag">Test rapido</p>
+                <h3 x-text="currentQuiz.prompt"></h3>
+              </div>
+              <div class="mini-stats">
+                <span><strong x-text="quizScore"></strong><small>puntos</small></span>
+                <span><strong x-text="levelQuizCapacity.toLocaleString('es-ES')"></strong><small>max. nivel</small></span>
+              </div>
+            </div>
+            <div class="quiz-options">
+              <template x-for="choice in currentQuiz.choices" :key="choice">
+                <button
+                  type="button"
+                  class="quiz-option"
+                  :class="{ selected: quizChoice === choice, correct: quizAnswered && choice === currentQuiz.answer, wrong: quizAnswered && quizChoice === choice && choice !== currentQuiz.answer }"
+                  @click="answerQuiz(choice)"
+                  x-text="choice"
+                ></button>
+              </template>
+            </div>
+            <p class="quiz-feedback" x-show="quizAnswered" x-text="quizFeedback"></p>
+            <button class="wide-action" type="button" @click="nextQuiz()">
+              <i data-lucide="arrow-right"></i>
+              Siguiente pregunta
+            </button>
+          </article>
+
+          <article class="tool-surface" x-show="activeTool === 'builder'">
+            <div class="tool-header">
+              <div>
+                <p class="tag">Constructor de frases</p>
+                <h3>Construye una frase, cambiala y dilo en voz alta.</h3>
+              </div>
+              <div class="mini-stats">
+                <span><strong x-text="builderCapacity.toLocaleString('es-ES')"></strong><small>max. variantes nivel</small></span>
+              </div>
+            </div>
+            <div class="builder-grid">
+              <label>
+                Sujeto
+                <select x-model="builderSubject" @change="persist()">
+                  <template x-for="item in activeSentenceParts.subjects" :key="item.id">
+                    <option :value="item.id" x-text="item.id"></option>
+                  </template>
+                </select>
+              </label>
+              <label>
+                Verbo
+                <select x-model="builderVerb" @change="persist()">
+                  <template x-for="item in activeSentenceParts.verbs" :key="item.id">
+                    <option :value="item.id" x-text="item.id"></option>
+                  </template>
+                </select>
+              </label>
+              <label>
+                Objeto
+                <select x-model="builderObject" @change="persist()">
+                  <template x-for="item in activeSentenceParts.objects" :key="item.id">
+                    <option :value="item.id" x-text="item.id"></option>
+                  </template>
+                </select>
+              </label>
+              <label>
+                Tiempo/contexto
+                <select x-model="builderTime" @change="persist()">
+                  <template x-for="item in activeSentenceParts.times" :key="item.id">
+                    <option :value="item.id" x-text="item.id"></option>
+                  </template>
+                </select>
+              </label>
+            </div>
+            <div class="mode-chips">
+              <template x-for="mode in sentenceModes" :key="mode.id">
+                <button type="button" :class="{ active: builderMode === mode.id }" @click="builderMode = mode.id; persist()" x-text="mode.label"></button>
+              </template>
+            </div>
+            <div class="built-sentence">
+              <strong x-text="builtSentence.id"></strong>
+              <span x-text="builtSentence.es"></span>
+            </div>
+            <div class="srs-actions">
+              <button type="button" @click="speakText(builtSentence.id, 0.86)">
+                <i data-lucide="volume-2"></i>
+                Oir frase
+              </button>
+              <button type="button" @click="saveBuiltSentence()">
+                <i data-lucide="save"></i>
+                Guardar como tarjeta
+              </button>
+            </div>
+          </article>
+
+          <article class="tool-surface" x-show="activeTool === 'shadow'">
+            <div class="tool-header">
+              <div>
+                <p class="tag">Shadowing</p>
+                <h3>Escucha, pisa la voz y repite hasta que salga facil.</h3>
+              </div>
+              <div class="mini-stats">
+                <span><strong x-text="shadowRounds"></strong><small>rondas</small></span>
+                <span><strong x-text="levelPhraseCapacity.toLocaleString('es-ES')"></strong><small>max. nivel</small></span>
+              </div>
+            </div>
+            <div class="shadow-card">
+              <p x-text="currentShadow.id"></p>
+              <span x-text="currentShadow.es"></span>
+            </div>
+            <div class="srs-actions">
+              <button type="button" @click="speakText(currentShadow.id, 0.68)">Lento</button>
+              <button type="button" @click="speakText(currentShadow.id, 0.92)">Natural</button>
+              <button type="button" @click="markShadowRound()">
+                <i data-lucide="check"></i>
+                Hecho
+              </button>
+              <button type="button" @click="nextShadow()">
+                <i data-lucide="shuffle"></i>
+                Nueva
+              </button>
+            </div>
+          </article>
+
+          <article class="tool-surface" x-show="activeTool === 'journal'">
+            <div class="tool-header">
+              <div>
+                <p class="tag">Diario activo</p>
+                <h3 x-text="currentJournalPrompt"></h3>
+              </div>
+              <div class="mini-stats">
+                <span><strong x-text="journalWords"></strong><small>palabras escritas</small></span>
+                <span><strong x-text="levelWritingCapacity.toLocaleString('es-ES')"></strong><small>max. temas nivel</small></span>
+              </div>
+            </div>
+            <textarea class="journal-area" x-model="journalText" @input="persist()" placeholder="Escribe en indonesio. Usa frases cortas, conectores y vocabulario de tu nivel."></textarea>
+            <div class="journal-feedback">
+              <span x-text="journalFeedback"></span>
+              <button type="button" @click="newJournalPrompt()">
+                <i data-lucide="refresh-cw"></i>
+                Nuevo tema
+              </button>
+            </div>
+          </article>
+
+          <article class="tool-surface tutor-surface" x-show="activeTool === 'tutor'">
+            <div class="tool-header">
+              <div>
+                <p class="tag">Tutor IA local</p>
+                <h3>Pregunta, escucha y crea practica al instante.</h3>
+              </div>
+              <div class="mini-stats">
+                <span><strong x-text="levelVocabularyCapacity.toLocaleString('es-ES')"></strong><small>max. vocabulario nivel</small></span>
+                <span><strong x-text="levelPhraseCapacity.toLocaleString('es-ES')"></strong><small>max. frases nivel</small></span>
+              </div>
+            </div>
+            <div class="tutor-quick">
+              <button type="button" :class="{ active: activeTutorMode === 'words' }" :aria-pressed="activeTutorMode === 'words'" @click="activateTutorMode('words')">Palabras</button>
+              <button type="button" :class="{ active: activeTutorMode === 'text' }" :aria-pressed="activeTutorMode === 'text'" @click="activateTutorMode('text')">Texto BIPA</button>
+              <button type="button" :class="{ active: activeTutorMode === 'pronunciation' }" :aria-pressed="activeTutorMode === 'pronunciation'" @click="activateTutorMode('pronunciation')">Pronunciacion</button>
+              <button type="button" :class="{ active: activeTutorMode === 'corpus' }" :aria-pressed="activeTutorMode === 'corpus'" @click="activateTutorMode('corpus')">Vocabulario del nivel</button>
+            </div>
+            <div class="tutor-reader" aria-live="polite">
+              <p class="tag" x-text="tutorActivityTitle"></p>
+              <p class="tutor-response" x-text="tutorResponse"></p>
+            </div>
+            <div class="tutor-compose">
+              <textarea x-model="tutorPrompt" placeholder="Escribe: corrige mi frase..., pronunciacion..., genera un texto..."></textarea>
+              <div class="srs-actions">
+                <button type="button" @click="sendTutorPrompt()">
+                  <i data-lucide="send"></i>
+                  Enviar
+                </button>
+                <button type="button" @click="downloadTutorCorpus()">
+                  <i data-lucide="download"></i>
+                  Exportar corpus
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="mission-strip">
+          <template x-for="mission in activeMissions" :key="mission.title">
+            <button type="button" class="mission-card" @click="copiedCommand = mission.action">
+              <strong x-text="mission.title"></strong>
+              <span x-text="mission.detail"></span>
+            </button>
+          </template>
+        </div>
+        <p class="copy-status" x-text="copiedCommand"></p>
+      </section>
+
+      <section id="ukbi" class="band split-band">
+        <div>
+          <p class="section-kicker">Medicion</p>
+          <h2>UKBI te da una lectura externa de tu dominio.</h2>
+          <p>
+            El UKBI Adaptif Merdeka mide comprension auditiva, respuesta a reglas, lectura,
+            escritura y habla. Usalo como brujula: BIPA organiza el aprendizaje, UKBI comprueba
+            la resistencia real de tu idioma.
+          </p>
+          <div class="score-list">
+            <template x-for="band in ukbiBands" :key="band.name">
+              <div class="score-row">
+                <span x-text="band.score"></span>
+                <strong x-text="band.name"></strong>
+                <small x-text="band.meaning"></small>
+              </div>
+            </template>
+          </div>
+        </div>
+        <div class="chart-panel">
+          <canvas id="skillChart" width="420" height="420" aria-label="Grafico de destrezas"></canvas>
+        </div>
+      </section>
+
+      <section id="agente" class="band tinted">
+        <div class="section-head compact">
+          <p class="section-kicker">Agente experto</p>
+          <h2>Prompt operativo para estudiar con feedback exigente.</h2>
+        </div>
+        <div class="agent-grid">
+          <div class="agent-card">
+            <h3>Rol del agente</h3>
+            <p>
+              Eres mi tutor experto de bahasa Indonesia para BIPA. Prioriza input comprensible, correccion breve,
+              repeticion espaciada, cultura real e incremento de dificultad i+1. No expliques demasiado antes de
+              hacerme usar el idioma.
+            </p>
+          </div>
+          <div class="agent-card">
+            <h3>Como debe corregirme</h3>
+            <p>
+              Primero responde al contenido. Luego marca solo los 3 errores que mas bloquean claridad, dame una
+              version natural y una tarea de reutilizacion con la misma estructura.
+            </p>
+          </div>
+          <div class="agent-card">
+            <h3>Rutina de cada sesion</h3>
+            <p>
+              1 texto o audio corto, 5 palabras clave, 3 preguntas faciles, retelling, shadowing, mini-dialogo,
+              frase de transferencia y tarjeta SRS.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="localhost" class="band localhost-band">
+        <div class="section-head">
+          <p class="section-kicker">Automatizacion local</p>
+          <h2>Activa o desactiva el localhost con un comando.</h2>
+          <p>
+            La web incluye scripts de Windows para encender, apagar o alternar el servidor local.
+            Tambien puedes usar los comandos npm si prefieres una interfaz familiar.
+          </p>
+        </div>
+        <div class="command-grid">
+          <button class="command-card" type="button" @click="copyCommand('.\\start-localhost.ps1')">
+            <i data-lucide="power"></i>
+            <strong>Activar</strong>
+            <code>.\start-localhost.ps1</code>
+          </button>
+          <button class="command-card" type="button" @click="copyCommand('.\\stop-localhost.ps1')">
+            <i data-lucide="power-off"></i>
+            <strong>Desactivar</strong>
+            <code>.\stop-localhost.ps1</code>
+          </button>
+          <button class="command-card" type="button" @click="copyCommand('.\\toggle-localhost.ps1')">
+            <i data-lucide="repeat-2"></i>
+            <strong>Alternar</strong>
+            <code>.\toggle-localhost.ps1</code>
+          </button>
+        </div>
+        <p class="copy-status" x-text="copiedCommand"></p>
+      </section>
+
+      <section class="band sources-band">
+        <div class="section-head compact">
+          <p class="section-kicker">Fuentes oficiales y base de diseno</p>
+          <h2>La ruta se apoya en materiales oficiales y medicion estandarizada.</h2>
+        </div>
+        <div class="source-list">
+          <template x-for="source in sources" :key="source.url">
+            <a :href="source.url" target="_blank" rel="noreferrer">
+              <strong x-text="source.title"></strong>
+              <span x-text="source.note"></span>
+            </a>
+          </template>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Indonesio Total</span>
+      <span>Ruta BIPA, medicion UKBI, practica diaria activa.</span>
+    </footer>
+
+    <script src="./daily-reset.js"></script>
+    <script src="./content-library.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
