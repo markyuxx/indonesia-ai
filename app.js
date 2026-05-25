@@ -548,13 +548,20 @@ function indonesianApp() {
       });
     },
     get currentLevel() {
-      return this.levels.find((level) => level.id === Number(this.selectedLevel)) || this.levels[0];
+      return this.levels.find((level) => level.id === this.selectedLevelId) || this.levels[0];
+    },
+    get selectedLevelId() {
+      const level = Number(this.selectedLevel);
+      return this.levels.some((item) => item.id === level) ? level : 1;
+    },
+    isSelectedLevel(item) {
+      return Number(item?.level) === this.selectedLevelId;
     },
     get currentDeck() {
       return this.readingPool[this.readingIndex % this.readingPool.length] || this.decks[1];
     },
     get readingPool() {
-      return [this.decks[this.selectedLevel] || this.decks[1], ...(this.readingDecks[this.selectedLevel] || [])];
+      return [this.decks[this.selectedLevelId] || this.decks[1], ...(this.readingDecks[this.selectedLevelId] || [])];
     },
     get allFlashcards() {
       return [...this.flashcards, ...this.customCards];
@@ -563,13 +570,13 @@ function indonesianApp() {
       return this.flashcards.filter((card) => /^lib-word-\d+-\d+$/.test(card.id));
     },
     get tutorWordPool() {
-      return this.libraryWords.filter((card) => Number(card.level) === Number(this.selectedLevel));
+      return this.libraryWords.filter((card) => this.isSelectedLevel(card));
     },
     get tutorCoreWords() {
       return this.tutorWordPool;
     },
     get levelFlashcards() {
-      return this.flashcards.filter((card) => Number(card.level) === Number(this.selectedLevel));
+      return this.flashcards.filter((card) => this.isSelectedLevel(card));
     },
     get levelCardCapacity() {
       return this.levelFlashcards.length;
@@ -578,10 +585,19 @@ function indonesianApp() {
       return this.tutorWordPool.length;
     },
     get flashcardPool() {
-      return this.allFlashcards.filter((card) => Number(card.level) === Number(this.selectedLevel));
+      return this.allFlashcards.filter((card) => this.isSelectedLevel(card));
     },
     get currentFlashcard() {
-      return this.flashcardPool[this.flashcardIndex % this.flashcardPool.length] || this.flashcards[0];
+      if (!this.flashcardPool.length) {
+        return {
+          id: `empty-card-${this.selectedLevelId}`,
+          level: this.selectedLevelId,
+          front: `Sin tarjetas BIPA ${this.selectedLevelId}`,
+          back: "No se mostrara contenido de otro nivel.",
+          example: "Crea una frase del constructor o cambia de BIPA."
+        };
+      }
+      return this.flashcardPool[this.flashcardIndex % this.flashcardPool.length];
     },
     get dueCards() {
       const today = this.todayKey();
@@ -604,13 +620,22 @@ function indonesianApp() {
       return this.levelFlashcards.filter((card) => (this.flashcardReviews[card.id]?.streak || 0) >= 3).length;
     },
     get quizPool() {
-      return this.quizBank.filter((item) => Number(item.level) === Number(this.selectedLevel));
+      return this.quizBank.filter((item) => this.isSelectedLevel(item));
     },
     get levelQuizCapacity() {
-      return this.quizBank.filter((item) => Number(item.level) === Number(this.selectedLevel)).length;
+      return this.quizPool.length;
     },
     get currentQuiz() {
-      return this.quizPool[this.quizIndex % this.quizPool.length] || this.quizBank[0];
+      if (!this.quizPool.length) {
+        return {
+          level: this.selectedLevelId,
+          prompt: `Sin preguntas BIPA ${this.selectedLevelId}`,
+          choices: ["Continuar"],
+          answer: "Continuar",
+          note: "No se mostrara contenido de otro nivel."
+        };
+      }
+      return this.quizPool[this.quizIndex % this.quizPool.length];
     },
     get quizFeedback() {
       if (!this.quizAnswered) return "";
@@ -619,10 +644,10 @@ function indonesianApp() {
     },
     get activeSentenceParts() {
       return {
-        subjects: this.sentenceParts.subjects.filter((part) => Number(part.level || 1) === Number(this.selectedLevel)),
-        verbs: this.sentenceParts.verbs.filter((part) => Number(part.level || 1) === Number(this.selectedLevel)),
-        objects: this.sentenceParts.objects.filter((part) => Number(part.level || 1) === Number(this.selectedLevel)),
-        times: this.sentenceParts.times.filter((part) => Number(part.level || 1) === Number(this.selectedLevel))
+        subjects: this.sentenceParts.subjects.filter((part) => this.isSelectedLevel(part)),
+        verbs: this.sentenceParts.verbs.filter((part) => this.isSelectedLevel(part)),
+        objects: this.sentenceParts.objects.filter((part) => this.isSelectedLevel(part)),
+        times: this.sentenceParts.times.filter((part) => this.isSelectedLevel(part))
       };
     },
     get builtSentence() {
@@ -630,6 +655,12 @@ function indonesianApp() {
       const verb = this.findPart("verbs", this.builderVerb);
       const object = this.findPart("objects", this.builderObject);
       const time = this.findPart("times", this.builderTime);
+      if (!subject || !verb || !object || !time) {
+        return {
+          id: `Sin piezas BIPA ${this.selectedLevelId}.`,
+          es: "El constructor no mostrara piezas de otro nivel."
+        };
+      }
       const subjectText = subject.id;
       const lowerSubject = subjectText.charAt(0).toLowerCase() + subjectText.slice(1);
 
@@ -670,24 +701,32 @@ function indonesianApp() {
       return this.activeSentenceParts.subjects.length * this.activeSentenceParts.verbs.length * this.activeSentenceParts.objects.length * this.activeSentenceParts.times.length * this.sentenceModes.length;
     },
     get shadowPool() {
-      return this.shadowLines.filter((item) => Number(item.level) === Number(this.selectedLevel));
+      return this.shadowLines.filter((item) => this.isSelectedLevel(item));
     },
     get levelPhraseCapacity() {
-      return this.shadowLines.filter((item) => Number(item.level) === Number(this.selectedLevel)).length;
+      return this.shadowPool.length;
     },
     get currentShadow() {
-      return this.shadowPool[this.shadowIndex % this.shadowPool.length] || this.shadowLines[0];
+      if (!this.shadowPool.length) {
+        return {
+          level: this.selectedLevelId,
+          id: `Sin frases BIPA ${this.selectedLevelId}.`,
+          es: "No se mostrara shadowing de otro nivel."
+        };
+      }
+      return this.shadowPool[this.shadowIndex % this.shadowPool.length];
     },
     get journalPromptPool() {
-      return this.journalPrompts.filter((item) => Number(item.level) === Number(this.selectedLevel));
+      return this.journalPrompts.filter((item) => this.isSelectedLevel(item));
     },
     get levelWritingCapacity() {
-      return this.journalPrompts.filter((item) => Number(item.level) === Number(this.selectedLevel)).length;
+      return this.journalPromptPool.length;
     },
     get levelReadingCapacity() {
       return this.readingPool.length;
     },
     get currentJournalPrompt() {
+      if (!this.journalPromptPool.length) return `Sin temas de diario BIPA ${this.selectedLevelId}.`;
       return this.journalPromptPool[this.journalPromptIndex % this.journalPromptPool.length].prompt;
     },
     get journalWords() {
@@ -700,7 +739,7 @@ function indonesianApp() {
       return "Excelente volumen: reduce repeticion y mejora cohesion.";
     },
     get activeMissions() {
-      return this.missions.filter((mission) => Number(mission.level) === Number(this.selectedLevel)).slice(0, 4);
+      return this.missions.filter((mission) => this.isSelectedLevel(mission)).slice(0, 4);
     },
     get retellWords() {
       return this.retellText.trim().split(/\s+/).filter(Boolean).length;
@@ -766,6 +805,13 @@ function indonesianApp() {
     selectLevel(level) {
       this.selectedLevel = Number(level);
       this.readingIndex = 0;
+      this.flashcardIndex = 0;
+      this.quizIndex = 0;
+      this.quizChoice = "";
+      this.quizAnswered = false;
+      this.shadowIndex = 0;
+      this.journalPromptIndex = 0;
+      this.journalText = "";
       this.normalizeBuilderSelection();
       this.persist();
       this.updateChart();
@@ -816,6 +862,10 @@ function indonesianApp() {
       };
       Object.entries(selections).forEach(([group, property]) => {
         const options = this.activeSentenceParts[group];
+        if (!options.length) {
+          this[property] = "";
+          return;
+        }
         if (!options.some((item) => item.id === this[property])) {
           this[property] = options[0].id;
         }
@@ -930,6 +980,7 @@ function indonesianApp() {
       this.persist();
     },
     nextQuiz() {
+      if (!this.quizPool.length) return;
       this.quizIndex = (this.quizIndex + 1) % this.quizPool.length;
       this.quizChoice = "";
       this.quizAnswered = false;
@@ -937,10 +988,11 @@ function indonesianApp() {
       this.refreshIcons();
     },
     saveBuiltSentence() {
+      if (!this.builtSentence.id || this.builtSentence.id.indexOf("Sin piezas") === 0) return;
       const id = `custom-${Date.now()}`;
       this.customCards.push({
         id,
-        level: Number(this.selectedLevel),
+        level: this.selectedLevelId,
         front: this.builtSentence.id,
         back: this.builtSentence.es,
         example: "Frase generada por el constructor."
@@ -953,6 +1005,7 @@ function indonesianApp() {
       this.refreshIcons();
     },
     nextShadow() {
+      if (!this.shadowPool.length) return;
       this.shadowIndex = (this.shadowIndex + 1) % this.shadowPool.length;
       this.persist();
     },
@@ -1254,7 +1307,8 @@ function indonesianApp() {
     load() {
       try {
         const state = JSON.parse(localStorage.getItem("indonesianTotalState") || "{}");
-        this.selectedLevel = Number(state.selectedLevel || this.selectedLevel);
+        const storedLevel = Number(state.selectedLevel || this.selectedLevel);
+        this.selectedLevel = this.levels.some((level) => level.id === storedLevel) ? storedLevel : 1;
         this.dailyMinutes = Number(state.dailyMinutes || this.dailyMinutes);
         this.goal = state.goal || this.goal;
         this.completedToday = Array.isArray(state.completedToday) ? state.completedToday : [];
@@ -1263,7 +1317,11 @@ function indonesianApp() {
         this.flashcardIndex = Number(state.flashcardIndex || 0);
         this.flashcardFlipped = Boolean(state.flashcardFlipped);
         this.flashcardReviews = state.flashcardReviews && typeof state.flashcardReviews === "object" ? state.flashcardReviews : {};
-        this.customCards = Array.isArray(state.customCards) ? state.customCards : [];
+        this.customCards = Array.isArray(state.customCards)
+          ? state.customCards
+            .map((card) => ({ ...card, level: Number(card.level) }))
+            .filter((card) => this.levels.some((level) => level.id === card.level))
+          : [];
         this.quizIndex = Number(state.quizIndex || 0);
         this.quizChoice = state.quizChoice || "";
         this.quizAnswered = Boolean(state.quizAnswered);
@@ -1279,6 +1337,7 @@ function indonesianApp() {
         this.journalPromptIndex = Number(state.journalPromptIndex || 0);
         this.readingIndex = Number(state.readingIndex || 0);
         this.progressDay = state.progressDay || "";
+        this.normalizeBuilderSelection();
       } catch {
         localStorage.removeItem("indonesianTotalState");
       }
